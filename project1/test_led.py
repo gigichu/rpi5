@@ -1,18 +1,17 @@
-import RPi.GPIO as gpio
+import gpiod
 import time
+PIN_NO = 17
+chip = gpiod.chip('gpiochip4')
+led_line = chip.get_line(PIN_NO)
+led_line.request(consumer="myLed", type=gpiod.LINE_REQ_DIR_OUT)
 
-led=26
-
-gpio.setmode(gpio.BCM)
-
-gpio.setup(led, gpio.OUT)
 try:
     while True:
-        gpio.output(led, gpio.HIGH)
+        led_line.set_value(1)
         time.sleep(1)
-        gpio.output(led, gpio.LOW)
+        led_line.set_value(0)
         time.sleep(1)
-except KeyboardInterrupt:
-    pass
-
-gpio.cleanup()
+finally:
+    led_line.release()
+    
+    
